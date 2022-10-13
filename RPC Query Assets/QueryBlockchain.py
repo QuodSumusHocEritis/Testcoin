@@ -1,6 +1,9 @@
 from jsonrpcclient import request, parse, Ok
 import logging
 import requests
+import pymongo
+import json
+
 #Program description
 #This program exists to monitor the attacker and its transactions.  This program needs to query the blockchain and each transaction for each address.
 
@@ -82,6 +85,15 @@ def GetChainFromGenTo(intBlockNum):
 def GetTxInfo(pTxId):
    return SendCommand("getrawtransaction", (pTxId, 1,))
 
+def IsMintTx(dictInputVals):
+    dictInputVals = dict(dictInputVals)
+    print((dictInputVals))
+    #only one array element and there is no prevout element then it's a mint transaction
+    if len(dictInputVals) == 1 and "prevout" not in dictInputVals:
+        return True
+    else:
+        return False
+
 #Main body
 #First, get the block count
 BlockCount = GetBlockCount()
@@ -90,13 +102,19 @@ CurrBlockHash = GetSpecifiedBlockHash(BlockCount)
 print("Curr Block Hash: " + str(CurrBlockHash))
 
 #We really want the entire chain.  This var is simply to make testing less cumbersome.
-tupBlocksAndTx = GetChainFromGenTo(100)
-for currBlock in tupBlocksAndTx:
-    print("Block # " + str(currBlock.BlockNum) + " (Block Hash: " + currBlock.Hash + ")")
+intLast = 3
+tupBlocksAndTx = GetChainFromGenTo(intLast)
+for CurrBlock in tupBlocksAndTx:
+    print("Block # " + str(CurrBlock.BlockNum) + " (Block Hash: " + CurrBlock.Hash + ")")
     print("Transaction List:")
-    for currTx in currBlock.TXs:
+    for currTx in CurrBlock.TXs:
         print("- " + currTx.Hash)
-        print(GetTxInfo(currTx.Hash))
+        jsnTxInfo = GetTxInfo(currTx.Hash)
+        if jsnTxInfo is not None:
+            print("Tx Info Type: " + str(type(jsnTxInfo)))
+            print("Vin Type: " + str(type(jsnTxInfo["vin"])))
+            if IsMintTx(jsnTxInfo["vin"]):
+                print("Minted Transaction")
 
 
-print(GetHelpText("getrawtransaction"))
+#print(GetHelpText("getrawtransaction"))
