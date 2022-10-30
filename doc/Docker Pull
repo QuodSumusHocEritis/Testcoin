@@ -3,6 +3,8 @@ add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(
 apt-get update
 apt-cache policy docker-ce
 apt-get install -y docker-ce
-docker pull quodsumushoceritis/testcoin_network_assets:testcoin-server1_1.0
-docker pull quodsumushoceritis/testcoin_network_assets:testcoin-server2_1.0
-docker pull quodsumushoceritis/testcoin_network_assets:testcoin-genericminer_1.0
+docker pull quodsumushoceritis/testcoin_network_assets:testcoin-server1_1.1
+docker pull quodsumushoceritis/testcoin_network_assets:testcoin-server2_1.1
+docker pull quodsumushoceritis/testcoin_network_assets:testcoin-server3_1.1
+docker pull quodsumushoceritis/testcoin_network_assets:testcoin-miner1_1.1
+docker pull quodsumushoceritis/testcoin_network_assets:testcoin-miner2_1.1
